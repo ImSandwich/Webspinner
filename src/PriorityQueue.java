@@ -10,19 +10,27 @@ class Handler {
     static class Node
     {
         private String name;
-        private Node[] dependencies;
+        public ArrayList<Node> dependencies;
+        public ArrayList<Node> children;
         public Node next;
         public Boolean learned;
-        public Node(String name, Node[] dependencies)
+        public Node(String name)
         {
             this.name = name;
-            this.dependencies = dependencies;
+            this.dependencies = new ArrayList<>();
+            this.children = new ArrayList<>();
             learned = false;
         }
 
-        public Node[] getDependencies()
+        public void addDependency(Node e)
         {
-            return dependencies;
+            if (e == null) return;
+            if (!dependencies.contains(e)) dependencies.add(e);
+        }
+
+        public void removeDependency(Node e)
+        {
+            if (dependencies.contains(e)) dependencies.remove(e);
         }
 
         public  Boolean isEndNode()
@@ -35,10 +43,6 @@ class Handler {
             return true;
         }
 
-        public void setDependencies(Node[] l)
-        {
-            dependencies = l;
-        }
 
         @Override
         public String toString()
@@ -47,19 +51,18 @@ class Handler {
         }
     }
 
-    class Pair<A, B extends Comparable<B>> implements Comparable<Pair<A, B>>
+    class NodeIntegerPair implements Comparable<NodeIntegerPair>
     {
-        public  A e1;
-        public  B e2;
-        public Pair (A element1, B element2)
+        public  Node e1;
+        public  Integer e2;
+        public NodeIntegerPair(Node element1, Integer element2)
         {
             e1 = element1;
             e2 = element2;
         }
 
 
-        @Override
-        public int compareTo(Pair<A, B> o) {
+        public int compareTo(NodeIntegerPair o) {
 
             return e2.compareTo(o.e2);
         }
@@ -72,30 +75,31 @@ class Handler {
         }
     }
 
-    public Integer retrievePriority(PriorityQueue<Pair<Node, Integer>> queue, Node a, Integer base)
+    public Integer retrievePriority(PriorityQueue<NodeIntegerPair> queue, Node a, Integer base)
     {
+
         if (a.isEndNode())
         {
             // base remains the same
         } else {
-            Integer[] childrenPriority = new Integer[a.dependencies.length];
-            for (int i = 0; i < a.dependencies.length; i++)
+            Integer[] childrenPriority = new Integer[a.dependencies.size()];
+            for (int i = 0; i < a.dependencies.size(); i++)
             {
-                childrenPriority[i] = retrievePriority(queue, a.dependencies[i], base + 1);
+                childrenPriority[i] = retrievePriority(queue, a.dependencies.get(i), base + 1);
             }
             base = Collections.max(Arrays.asList(childrenPriority)) + 1;
         }
 
-        queue.add(new Pair<>(a, base));
+        queue.add(new NodeIntegerPair(a, base));
 
         return base;
     }
 
-    public Node[] priority(Node a)
+    public Node[] generateDependency(Node a)
     {
-        PriorityQueue<Pair<Node, Integer>> relativeQueue = new PriorityQueue<>();
+        PriorityQueue<NodeIntegerPair> relativeQueue = new PriorityQueue<>();
         retrievePriority(relativeQueue, a, 0);
-        Handler.Pair<Handler.Node, Integer> p;
+        NodeIntegerPair p;
         HashMap<Handler.Node, Integer> leastDuplicate = new HashMap<>();
         ArrayList<Node> adder = new ArrayList<>();
         while ((p = relativeQueue.poll()) != null)

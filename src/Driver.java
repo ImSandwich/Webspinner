@@ -6,6 +6,7 @@
 public class Driver {
 
     public static void main(String[] args) {
+        /*
         Handler handler = new Handler();
         Handler.Node A = new Handler.Node("a", null);
         Handler.Node B = new Handler.Node("b", null);
@@ -20,12 +21,13 @@ public class Driver {
         A.setDependencies(new Handler.Node[]{B, C, D});
         B.setDependencies(new Handler.Node[]{E,C});
 
-        for(Handler.Node n : handler.priority(A))
+        for(Handler.Node n : handler.generateDependency(A))
         {
             System.out.println(n);
         }
 
-
+         */
+        MapBuilder map = new MapBuilder("Credit_derivative", 3);
 
     }
 }
