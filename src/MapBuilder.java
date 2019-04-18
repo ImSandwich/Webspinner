@@ -5,6 +5,7 @@
  **************************************************************************** */
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class MapBuilder {
@@ -15,9 +16,9 @@ public class MapBuilder {
         for (int i = 0; i < index; i++ ) System.out.print(" ");
         System.out.print(node);
         System.out.println();
-        for (int i = 0; i < node.children.size(); i++)
+        for (Iterator<Handler.Node> i = node.childrenIterator(); i.hasNext();)
         {
-            printNode(node.children.get(i), index+1);
+            printNode(i.next(), index+1);
         }
     }
     public MapBuilder(String startNode, int expanse)
@@ -48,7 +49,7 @@ public class MapBuilder {
                     }
                 }
                 currentNode.addDependency(nextNode.e1);
-                if (nextNode.e1 != null) nextNode.e1.children.add(currentNode);
+                nextNode.e1.addChild(currentNode);
 
             }
             queryQueue.clear();

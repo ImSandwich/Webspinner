@@ -1,8 +1,8 @@
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.PriorityQueue;
 
 class Handler {
@@ -10,8 +10,8 @@ class Handler {
     static class Node
     {
         private String name;
-        public ArrayList<Node> dependencies;
-        public ArrayList<Node> children;
+        private ArrayList<Node> dependencies;
+        private ArrayList<Node> children;
         public Node next;
         public Boolean learned;
         public Node(String name)
@@ -31,6 +31,49 @@ class Handler {
         public void removeDependency(Node e)
         {
             if (dependencies.contains(e)) dependencies.remove(e);
+        }
+
+        public void addChild(Node e)
+        {
+            if (e == null) return;
+            if (!children.contains(e)) children.add(e);
+        }
+
+        public void removeChild(Node e)
+        {
+            if (children.contains(e)) children.remove(e);
+        }
+
+        public Iterator<Node> childrenIterator()
+        {
+            return new Iterator<Node>() {
+                int index = 0;
+                @Override
+                public boolean hasNext() {
+                    return (index < children.size());
+                }
+
+                @Override
+                public Node next() {
+                    return children.get(index++);
+                }
+            };
+        }
+
+        public Iterator<Node> dependenciesIterator()
+        {
+            return new Iterator<Node>() {
+                int index = 0;
+                @Override
+                public boolean hasNext() {
+                    return (index < dependencies.size());
+                }
+
+                @Override
+                public Node next() {
+                    return dependencies.get(index++);
+                }
+            };
         }
 
         public  Boolean isEndNode()
