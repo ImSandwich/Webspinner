@@ -27,7 +27,7 @@ public class Driver {
         }
 
          */
-        MapBuilder map = new MapBuilder("Credit_derivative", 3);
+        TreeBuilder treeBuilder = new TreeBuilder("Credit_derivative", 3);
 
     }
 }

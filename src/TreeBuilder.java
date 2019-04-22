@@ -5,41 +5,37 @@
  **************************************************************************** */
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 
-public class MapBuilder {
-    private Handler handler;
+public class TreeBuilder {
+    private TreeNavigator treeNavigator;
 
-    public static void printNode(Handler.Node node, int index)
+    public static void printNode(Node node, int index)
     {
         for (int i = 0; i < index; i++ ) System.out.print(" ");
         System.out.print(node);
         System.out.println();
-        for (Iterator<Handler.Node> i = node.childrenIterator(); i.hasNext();)
-        {
-            printNode(i.next(), index+1);
-        }
     }
-    public MapBuilder(String startNode, int expanse)
+
+    public TreeBuilder(String startNode, int expanse)
     {
-        handler = new Handler();
-        HashMap<String, Handler.Node> discovered = new HashMap<>();
-        LinkedList<Pair<Handler.Node, String>> queryQueue = new LinkedList<>();
-        LinkedList<Pair<Handler.Node, String>> followingQueryQueue = new LinkedList<>();
+        treeNavigator = new TreeNavigator();
+        HashMap<String, Node> discovered = new HashMap<>();
+        LinkedList<Pair<Node, String>> queryQueue = new LinkedList<>();
+        LinkedList<Pair<Node, String>> followingQueryQueue = new LinkedList<>();
         queryQueue.push(new Pair<>(null, startNode));
         while (expanse > 0)
         {
-            Pair<Handler.Node,String> nextNode;
+            Pair<Node,String> nextNode;
             while (queryQueue.size()>0) // nextNode : (Parent node, article names linked to the parent node)
             {
                 nextNode = queryQueue.pop();
-                Handler.Node currentNode;
+                Node currentNode;
                 if (discovered.containsKey(nextNode.e2)) // check if we have expanded the article already
                 {
                     currentNode = discovered.get(nextNode.e2);
                 } else {
-                    currentNode = new Handler.Node(nextNode.e2);
+                    currentNode = new Node(nextNode.e2);
                     System.out.println("Added: " + nextNode.e2);
                     discovered.put(nextNode.e2, currentNode); // add article to list of expanded articles
                     WebScraper.WikipediaResponse response = WebScraper.scrapWikipedia(nextNode.e2);
@@ -48,8 +44,8 @@ public class MapBuilder {
                         followingQueryQueue.add(new Pair<>(currentNode, urls));  // new Pair : (Current node, article names linked to the current node)
                     }
                 }
-                currentNode.addDependency(nextNode.e1);
-                nextNode.e1.addChild(currentNode);
+                currentNode.addParent(nextNode.e1);
+
 
             }
             queryQueue.clear();
@@ -57,7 +53,7 @@ public class MapBuilder {
             followingQueryQueue.clear();
             expanse--;
         }
-        Handler.Node node = discovered.get(startNode);
+        Node node = discovered.get(startNode);
         printNode(node, 0);
 
     }
