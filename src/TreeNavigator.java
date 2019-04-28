@@ -10,18 +10,18 @@ public class TreeNavigator{
     public Integer retrievePriority(PriorityQueue<Pair<Node, Integer>> queue, Node a, Integer base)
     {
 
-        if (a.isEndNode())
+        if (a.parentCount() == 0)
         {
             // base remains the same
         } else {
-            Integer[] childrenPriority = new Integer[a.parentCount()];
+            Integer[] parentPriority = new Integer[a.parentCount()];
             Iterator<Node> parentsIterator = a.parentsIterator();
             int index = 0;
-            for(Node parent = parentsIterator.next(); parentsIterator.hasNext();)
+            for(Iterator<Node> parent = parentsIterator; parentsIterator.hasNext();)
             {
-                childrenPriority[index++] = retrievePriority(queue, parent, base+1);
+                parentPriority[index++] = retrievePriority(queue, parent.next(), base+1);
             }
-            base = Collections.max(Arrays.asList(childrenPriority)) + 1;
+            base = Collections.max(Arrays.asList(parentPriority)) + 1;
         }
 
         queue.add(new Pair<>(a, base));
@@ -46,6 +46,5 @@ public class TreeNavigator{
         }
         return  adder.toArray(new Node[adder.size()]);
     }
-
 
 }
