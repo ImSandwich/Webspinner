@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Random;
 public class TreeBuilder {
@@ -36,7 +35,7 @@ public class TreeBuilder {
         }
     }
 
-
+/* Obsolete - For testing purposes only
     public TreeBuilder(String startNode, int expanse)
     {
         treeNavigator = new TreeNavigator();
@@ -83,6 +82,7 @@ public class TreeBuilder {
 
     }
 
+ */
     public Integer getNumberCycles(Node root)
     {
         HashMap<Node, Boolean> visited =  new HashMap<>();

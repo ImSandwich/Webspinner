@@ -6,6 +6,7 @@
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.io.*;
 
 class Pair<A, B extends Comparable<B>> implements Comparable<Pair<A,B>>
 {
@@ -29,7 +30,7 @@ class Pair<A, B extends Comparable<B>> implements Comparable<Pair<A,B>>
 
 }
 
-class Node {
+class Node implements Serializable{
     private String name;
     private ArrayList<Node> parents;
     private ArrayList<Node> children;
