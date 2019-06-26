@@ -14,14 +14,21 @@ def word_match(s1, s2):
     s2 = s2.split(' ')
     return max_match(s1, s2, len(s1)-1, len(s2)-1)
 
+def is_hypernym(word, hyp):
+    candidates = [str(y) for x in wordnet.synsets(word) for y in x.hypernyms()]
+    return any([str(x) in candidates for x in wordnet.synsets(hyp)])
+
 def generalize_sentence(tokens, d, f, wildcard=False):
     pos_tags = pos_tag(tokens)
     out = []
     wildcard_last = False
+    contains_word = False
+    contains_hypernym = False
     for p in pos_tags:
         word, pos = p
         if word == d:
             out += ["@"]
+            contains_word = True
             wildcard_last = False
         elif word in f:
             out += [word]
@@ -32,8 +39,12 @@ def generalize_sentence(tokens, d, f, wildcard=False):
                     out += "*"
                     wildcard_last = True
             else:
-                out += [pos]
-    return out
+                if is_hypernym(d, word):
+                    contains_hypernym = True
+                    out += [pos + "x"]
+                else:
+                    out += [pos]
+    return out, contains_word and contains_hypernym
 
 def extract_dictionary(file):
     f = open(file, "r")
@@ -87,7 +98,9 @@ def generate_WCL(w, theta):
             print(float(I)/T)
         definitions = w[key]
         for d in definitions:
-            cluster = tuple(generalize_sentence(d, key, common_words, wildcard=True))
+            cluster, contains_word = tuple(generalize_sentence(d, key, common_words, wildcard=True))
+            if not contains_word:
+                continue
             if cluster not in clusters:
                 clusters[cluster] = []
             clusters[cluster] += [generalize_sentence(d, key, common_words, wildcard=False)]
@@ -106,5 +119,6 @@ else:
     pickle.dump(w, open("dict/word_dic.pickle","wb"))
 
 generate_WCL(w, 100)
+
 
 #print(word_match("a quick brown fox jumped over a lazy dog", "a quick fox jumped over a lazy dog"))
