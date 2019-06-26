@@ -18,6 +18,7 @@ def getWeights(E):
 '''
 PRECONDITION:
 1. Graph is fully connected
+2. Has one root
 '''
 def getArborescence(E, r, w):
     # Combine weights and edges
