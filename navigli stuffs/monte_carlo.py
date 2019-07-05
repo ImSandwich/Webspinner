@@ -86,10 +86,11 @@ for i in range(steps):
             direction[flipIndex] = 1 - direction[flipIndex]
 
     after_entropy = getEntropy(range(len(vertices_label)), edges, direction)
-    constant = 1.0
-    alpha = 0 if after_entropy == 0 else math.exp(-constant/after_entropy)
-    beta = 0 if original_entropy == 0 else math.exp(-constant/original_entropy)
-    if random.uniform(0,1) <= min(1, alpha/beta):
+    constant = 100
+    alpha = 0 if after_entropy == 0 else math.exp(constant*after_entropy)
+    beta = 0 if original_entropy == 0 else math.exp(constant*original_entropy)
+    print(alpha/(alpha+beta))
+    if random.uniform(0,1) <= alpha/(alpha+beta):
         pass
     else:
         # revert
